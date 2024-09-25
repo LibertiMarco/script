@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Product;
 use App\Repository\ProductRepository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
@@ -30,19 +29,16 @@ class CreateProductCommand extends Command
         ProductRepository $productRepository
     ) {
         $faker = \Faker\Factory::create('it_IT');
-        $products = "| sku | titolo_prodotto | prezzo | \n";
-        $productFactory = Product::factory();
+        $productsLocal = "|sku|titolo_prodotto|prezzo| \n";
+        $productsFTP = "|codice|titolo|price| \n";
         for ($i = 0; $i < 100; $i++){
-            $product = $productFactory->make([
-                'sku' => $faker->uuid(),
-                'titolo_prodotto' => $faker->name,
-                'price' => random_int(100,2500),
-                'competitor' => $faker->company
-            ]);
-            $products = $products . "|" . $product->sku . "|" . $product->titolo_prodotto . "|" . $product->price . "| \n";
-            //$productRepository->save($product);
+            $product = $productRepository->create($faker->uuid(), $faker->name, random_int(100,2500), $faker->company);
+            $productsLocal = $productsLocal . "|" . $product->sku . "|" . $product->titolo_prodotto . "|" . $product->price . "| \n";
+            $productsFTP = $productsFTP . "|" . $product->sku . "|" . $product->titolo_prodotto . "|" . $product->price . "| \n";
+            $productRepository->save($product);
         }
-        Storage::disk('local')->put('products.csv',$products);
-        //Storage::disk('ftp')->put('products.csv',$products);
+        //Alternare i due per non far creare gli stessi
+        //Storage::disk('local')->put('products.csv',$productsLocal);
+        Storage::disk('ftp')->put('products.csv',$productsFTP);
     }
 }

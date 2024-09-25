@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Management\BestCompetitorProductManagement;
-use App\Models\BestCompetitorProduct;
 use App\Repository\BestCompetitorProductRepository;
 use App\Repository\ProductRepository;
 use Illuminate\Console\Command;
@@ -40,23 +39,12 @@ class CompetitorFindBestCommand extends Command
                 $exist = $bestCompetitorProductManagement->checkSku($product);
 
                 if($exist === false) {
-                    $bestCompetitorProductFactory = BestCompetitorProduct::factory();
-                    $bestCompetitorProduct = $bestCompetitorProductFactory->make([
-                        'sku' => $productWithSku->sku,
-                        'Titolo_Prodotto' => $productWithSku->titolo_prodotto,
-                        'Winner_Competitor' => $productWithSku->competitor,
-                        'Prezzo_di_Vendita' => $productWithSku->price,
-                        'product_id' => $productWithSku->id,
-                    ]);
+                    $bestCompetitorProduct = $bestCompetitorProductRepository->create($productWithSku->sku, $productWithSku->titolo_prodotto, $productWithSku->competitor, $productWithSku->price, $productWithSku->id);
                     $bestCompetitorProductRepository->save($bestCompetitorProduct);
                 } else {
                     $bestCompetitorProduct = $bestCompetitorProductRepository->getBySku($productWithSku);
                     if($bestCompetitorProduct[0]->Prezzo_di_Vendita < $productWithSku->price) {
-                        $bestCompetitorProduct[0]->Winner_Competitor = $productWithSku->competitor;
-                        $bestCompetitorProduct[0]->Titolo_Prodotto = $productWithSku->titolo_prodotto;
-                        $bestCompetitorProduct[0]->Prezzo_di_Vendita = $productWithSku->price;
-                        $bestCompetitorProduct[0]->product_id = $productWithSku->id;
-
+                        $bestCompetitorProductRepository->update($bestCompetitorProduct[0], $productWithSku->sku, $productWithSku->titolo_prodotto, $productWithSku->competitor, $productWithSku->price, $productWithSku->id);
                         $bestCompetitorProductRepository->save($bestCompetitorProduct[0]);
                     }
                 }

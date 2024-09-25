@@ -2,7 +2,7 @@
 
 namespace App\Api\Data;
 
-interface BestCompetitorProduct
+interface BestSupplierInterface
 {
 
 }

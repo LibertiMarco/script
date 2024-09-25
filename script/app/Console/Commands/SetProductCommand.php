@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Product;
 use App\Repository\ProductRepository;
 use Illuminate\Console\Command;
 
@@ -32,10 +33,7 @@ class SetProductCommand extends Command
 
         $product = $productRepository->getById($idProduct);
 
-        $product->sku = $faker->uuid();
-        $product->titolo_prodotto = $faker->name;
-        $product->price = random_int(100,2500);
-        $product->competitor = $faker->company;
+        $productRepository->update($product, $faker->uuid(), $faker->name, random_int(100,2500), $faker->company);
 
         $productRepository->save($product);
     }

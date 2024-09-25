@@ -2,15 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\DataObject\OurScraperObserver;
 use App\Management\ProductManagement;
-use App\Models\Product;
 use App\Repository\ProductRepository;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Casts\Json;
-use Illuminate\Support\Facades\Http;
-use Spatie\Crawler\Crawler;
-use  \Spatie\Crawler\CrawlObservers\CrawlObserver;
 
 class RecuperoProductStrumentiMusicaliCommand extends Command
 {
@@ -55,14 +49,7 @@ class RecuperoProductStrumentiMusicaliCommand extends Command
                 $price = $productManagement->castPrice($priceString, 15, 7);
                 $sku = $detail_html->find("div .container-sidebar-right-product-code b", 0)->text();
 
-                $productFactory = Product::factory();
-                $product = $productFactory->create([
-                    'sku' => $sku,
-                    'competitor' => $competitor,
-                    'price' => $price,
-                    'titolo_prodotto' => $titolo
-                ]);
-
+                $product = $productRepository->create($sku, $titolo, $price, $competitor);
 
                 echo "\n\n Prodotto: " . $titolo . "\n competitor: " . $competitor . "\n SKU: " . $sku . "\n prezzo: " . $price;
                 $productRepository->save($product);

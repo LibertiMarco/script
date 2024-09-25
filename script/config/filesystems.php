@@ -38,9 +38,10 @@ return [
 
         'ftp' => [
             'driver' => 'ftp',
-            'host' => env('127.0.0.1'),
-            'username' => env('marco'),
-            'password' => env('esercizio'),
+            'host' => env('FTP_HOST', '127.0.0.1'),
+            'username' => env('FTP_USERNAME', 'user01'),
+            'password' => env('FTP_PASSWORD', 'user01'),
+            'port' => (int) env('FTP_PORT', 210),
         ],
 
         'public' => [

@@ -50,13 +50,7 @@ class RecuperoProductCiaravolaCommand extends Command
             $price = $productManagement->castPrice($priceString, 13, 0);
             $sku = $detail_html->find("div .product-reference span",0)->text();
 
-            $productFactory = Product::factory();
-            $product = $productFactory->create([
-                'sku' => $sku,
-                'competitor' => $competitor,
-                'price' => $price,
-                'titolo_prodotto' => $titolo
-            ]);
+            $product = $productRepository->create($sku, $titolo, $price, $competitor);
 
             echo "\n\n Prodotto: " . $titolo . "\n competitor: " . $competitor . "\n SKU: " . $sku . "\n prezzo: " . $price;
             $productRepository->save($product);
