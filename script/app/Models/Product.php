@@ -11,6 +11,6 @@ class Product extends Model
 
     public function BestCompetitorProduct()
     {
-        return $this->belongsTo(BestCompetitorProduct::class);
+        return $this->hasOne(BestCompetitorProduct::class);
     }
 }

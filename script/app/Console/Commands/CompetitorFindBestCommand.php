@@ -41,11 +41,13 @@ class CompetitorFindBestCommand extends Command
                 if($exist === false) {
                     $bestCompetitorProduct = $bestCompetitorProductRepository->create($productWithSku->sku, $productWithSku->titolo_prodotto, $productWithSku->competitor, $productWithSku->price, $productWithSku->id);
                     $bestCompetitorProductRepository->save($bestCompetitorProduct);
+                    echo "\n BestCompetitorProduct aggiunto:\n sku: " . $productWithSku->sku;
                 } else {
                     $bestCompetitorProduct = $bestCompetitorProductRepository->getBySku($productWithSku);
                     if($bestCompetitorProduct[0]->Prezzo_di_Vendita < $productWithSku->price) {
                         $bestCompetitorProductRepository->update($bestCompetitorProduct[0], $productWithSku->sku, $productWithSku->titolo_prodotto, $productWithSku->competitor, $productWithSku->price, $productWithSku->id);
                         $bestCompetitorProductRepository->save($bestCompetitorProduct[0]);
+                        echo "\n BestCompetitorProduct modificato:\n sku: " . $productWithSku->sku;
                     }
                 }
             }
