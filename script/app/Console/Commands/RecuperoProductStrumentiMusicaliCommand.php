@@ -30,18 +30,17 @@ class RecuperoProductStrumentiMusicaliCommand extends Command
         ProductManagement $productManagement
     ) {
         include("simple_html_dom.php");
-        for ($i = 1; $i < 9; $i++){
-            $html = file_get_html("https://www.strumentimusicali.net/default.php/cPath/28_30_777/batterie-acustiche/kit-batterie-acustiche.html/page/".$i);
-
+        $URL='https://www.strumentimusicali.net/';
+        for ($i = 1; $i < 9; $i++) {
+            $html = file_get_html($URL."default.php/cPath/28_30_777/batterie-acustiche/kit-batterie-acustiche.html/page/".$i);
             foreach ($html->find("tr .productListing-even") as $productSite) {
-
                 $competitor = "www.strumentimusicali.net";
                 $titolo =  $productSite->find("a", 0)->attr["title"];
                 $link = $productSite->find("a", 0)->attr["href"];
 
                 $detail_html = file_get_html($link);
 
-                if($detail_html->find("div .product-offert-price", 0) != null){
+                if($detail_html->find("div .product-offert-price", 0) != null) {
                     $priceString = $detail_html->find("div .product-offert-price", 0)->text();
                 }else {
                     $priceString = $detail_html->find("div .product-base-price", 0)->text();
@@ -51,7 +50,7 @@ class RecuperoProductStrumentiMusicaliCommand extends Command
 
                 $product = $productRepository->create($sku, $titolo, $price, $competitor);
 
-                echo "\n\n Prodotto: " . $titolo . "\n competitor: " . $competitor . "\n SKU: " . $sku . "\n prezzo: " . $price;
+                echo "\n\nProdotto: ".$titolo."\n competitor: ".$competitor."\n SKU: ".$sku."\n prezzo: ".$price;
                 $productRepository->save($product);
             }
             sleep(60);

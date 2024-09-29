@@ -26,8 +26,7 @@ class DeleteProduct extends Command
      */
     public function handle(
         ProductRepository $productRepository
-    )
-    {
+    ) {
         $idProduct = $this->ask('Inserisci l\'id del prodotto che vuoi eliminare');
         $product = $productRepository->getById($idProduct);
         $productRepository->delete($product);

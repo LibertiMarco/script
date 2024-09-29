@@ -31,10 +31,15 @@ class CompetitiveProductCommand extends Command
         BestSupplierRepository $bestSupplierRepository,
         CompetitiveProductRepository $competitiveProductRepository
     ) {
-        $bestSuppliers = $bestSupplierRepository->getList();
+        $bestSuppliers = $bestSupplierRepository->getList(); //Recupero di tutti i BestSuppliers
 
-        foreach ($bestSuppliers as $bestSupplier) {
-            $competitiveProduct = $competitiveProductRepository->create($bestSupplier->sku,$bestSupplier->title,$competitiveProductManagement->isCompetitiveProduct($bestSupplier),$bestSupplier->price);
+        foreach ($bestSuppliers as $bestSupplier) { //ciclo per scorrerli singolarmente
+            $competitiveProduct = $competitiveProductRepository->create( //Inseriamo nella nuova tabella con il flag iscompetitive calcolato nel management
+                $bestSupplier->sku,
+                $bestSupplier->title,
+                $competitiveProductManagement->isCompetitiveProduct($bestSupplier),
+                $bestSupplier->price
+            );
             $competitiveProductRepository->save($competitiveProduct);
         }
     }

@@ -36,47 +36,79 @@ class SupplierMatchCommand extends Command
         $dataFTP = $productRepository->getListByFile('products.csv','ftp','standard'); //|codice|titolo|price|
         $dataHTML = $productRepository->getListByFile('http://localhost:8080/products.csv','ftp','HTTP'); //|cod|title|prezzo_vendita|
 
-        foreach ($data as $productLocal) {
-            $exist = $bestSupplierManagement->checkSku($productLocal['sku']);
-            if($exist === false){
-                $bestSupplier = $bestSupplierRepository->create($productLocal['sku'], $productLocal['titolo_prodotto'],$productLocal['prezzo'], 'Local');
+        foreach ($data as $productLocal) { //Ciclo per i valori del file in locale
+            $exist = $bestSupplierManagement->checkSku($productLocal['sku']); //check se esiste sulla tabella BestSupplier
+            if($exist === false) { // se non esiste lo creiamo
+                $bestSupplier = $bestSupplierRepository->create(
+                    $productLocal['sku'],
+                    $productLocal['titolo_prodotto'],
+                    $productLocal['prezzo'],
+                    'Local'
+                );
                 $bestSupplierRepository->save($bestSupplier);
-            }else{
-                $bestSupplierExist = $bestSupplierRepository->getBySku($productLocal['sku']);
-                if ($bestSupplierExist[0]->price > $productLocal['prezzo']) {
-                    $bestSupplierRepository->update($bestSupplierExist[0], $productLocal['sku'],  $productLocal['titolo_prodotto'],  $productLocal['prezzo'],  'Local');
+            }else {
+                $bestSupplierExist = $bestSupplierRepository->getBySku($productLocal['sku']); //se esiste lo recuperiamo
+                if ($bestSupplierExist[0]->price > $productLocal['prezzo']) { //confrontiamo i prezzi e se il nuovo prodotto ha il prezzo migliore aggiorniamo i dati
+                    $bestSupplierRepository->update(
+                        $bestSupplierExist[0],
+                        $productLocal['sku'],
+                        $productLocal['titolo_prodotto'],
+                        $productLocal['prezzo'],
+                        'Local'
+                    );
                     $bestSupplierRepository->save($bestSupplierExist[0]);
                 }
             }
         }
 
-        foreach ($dataFTP as $productFTP) {
-            $exist = $bestSupplierManagement->checkSku($productFTP['codice']);
-            if($exist === false){
-                $bestSupplier = $bestSupplierRepository->create($productFTP['codice'], $productFTP['titolo'],$productFTP['price'], 'FTP');
+        foreach ($dataFTP as $productFTP) { //Ciclo per i valori del file salvato in un area FTP
+            $exist = $bestSupplierManagement->checkSku($productFTP['codice']); //check se esiste sulla tabella BestSupplier
+            if($exist === false) { // se non esiste lo creiamo
+                $bestSupplier = $bestSupplierRepository->create(
+                    $productFTP['codice'],
+                    $productFTP['titolo'],
+                    $productFTP['price'],
+                    'FTP'
+                );
                 $bestSupplierRepository->save($bestSupplier);
-            }else{
-                $bestSupplierExist = $bestSupplierRepository->getBySku($productFTP['codice']);
-                if ($bestSupplierExist[0]->price > $productFTP['price']) {
-                    $bestSupplierRepository->update($bestSupplierExist[0], $productFTP['codice'],  $productLocal['titolo'],  $productLocal['price'],  'FTP');
+            }else {
+                $bestSupplierExist = $bestSupplierRepository->getBySku($productFTP['codice']); //se esiste lo recuperiamo
+                if ($bestSupplierExist[0]->price > $productFTP['price']) { //confrontiamo i prezzi e se il nuovo prodotto ha il prezzo migliore aggiorniamo i dati
+                    $bestSupplierRepository->update(
+                        $bestSupplierExist[0],
+                        $productFTP['codice'],
+                        $productLocal['titolo'],
+                        $productLocal['price'],
+                        'FTP'
+                    );
                     $bestSupplierRepository->save($bestSupplierExist[0]);
                 }
             }
         }
 
-        foreach ($dataHTML as $productHTML) {
-            $exist = $bestSupplierManagement->checkSku($productHTML['cod']);
-            if($exist === false){
-                $bestSupplier = $bestSupplierRepository->create($productHTML['cod'], $productHTML['title'],$productHTML['prezzo_vendita'], 'HTTP');
+        foreach ($dataHTML as $productHTML) { //Ciclo per i valori del file in cURL
+            $exist = $bestSupplierManagement->checkSku($productHTML['cod']); //check se esiste sulla tabella BestSupplier
+            if($exist === false) { // se non esiste lo creiamo
+                $bestSupplier = $bestSupplierRepository->create(
+                    $productHTML['cod'],
+                    $productHTML['title'],
+                    $productHTML['prezzo_vendita'],
+                    'HTTP'
+                );
                 $bestSupplierRepository->save($bestSupplier);
-            }else{
-                $bestSupplierExist = $bestSupplierRepository->getBySku($productHTML['cod']);
-                if ($bestSupplierExist[0]->price > $productHTML['cod']) {
-                    $bestSupplierRepository->update($bestSupplierExist[0], $productHTML['cod'],  $productHTML['title'],  $productHTML['prezzo_vendita'],  'HTTP');
+            }else {
+                $bestSupplierExist = $bestSupplierRepository->getBySku($productHTML['cod']); //se esiste lo recuperiamo
+                if ($bestSupplierExist[0]->price > $productHTML['cod']) { //confrontiamo i prezzi e se il nuovo prodotto ha il prezzo migliore aggiorniamo i dati
+                    $bestSupplierRepository->update(
+                        $bestSupplierExist[0],
+                        $productHTML['cod'],
+                        $productHTML['title'],
+                        $productHTML['prezzo_vendita'],
+                        'HTTP'
+                    );
                     $bestSupplierRepository->save($bestSupplierExist[0]);
                 }
             }
         }
-
     }
 }

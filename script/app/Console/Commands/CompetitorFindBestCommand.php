@@ -31,23 +31,34 @@ class CompetitorFindBestCommand extends Command
         BestCompetitorProductManagement $bestCompetitorProductManagement,
         BestCompetitorProductRepository $bestCompetitorProductRepository
     ) {
-        $products = $productRepository->getList();
-        foreach ($products as $product) {
-            $productsWithSku = $productRepository->getBySku($product);
+        $products = $productRepository->getList(); //Recupero di tutti i product
+        foreach ($products as $product) { //Ciclo per scorrerli singolarmente
+            $productsWithSku = $productRepository->getBySku($product); //Recuperiamo tutti i prodotti con quello sku (possono esserci N prodotti con lo stesso sku)
 
-            foreach ($productsWithSku as $productWithSku) {
-                $exist = $bestCompetitorProductManagement->checkSku($product);
+            foreach ($productsWithSku as $productWithSku) { //Scorriamo i prodotti con lo sku recuperato
+                $exist = $bestCompetitorProductManagement->checkSku($product); //Controlliamo se esiste già questo sku nella tabella BestCompetitorProduct
 
-                if($exist === false) {
-                    $bestCompetitorProduct = $bestCompetitorProductRepository->create($productWithSku->sku, $productWithSku->titolo_prodotto, $productWithSku->competitor, $productWithSku->price, $productWithSku->id);
+                if($exist === false) { //Se non esiste lo creiamo
+                    $bestCompetitorProduct = $bestCompetitorProductRepository->create(
+                        $productWithSku->sku,
+                        $productWithSku->titolo_prodotto,
+                        $productWithSku->competitor,
+                        $productWithSku->price,
+                        $productWithSku->id
+                    );
                     $bestCompetitorProductRepository->save($bestCompetitorProduct);
-                    echo "\n BestCompetitorProduct aggiunto:\n sku: " . $productWithSku->sku;
-                } else {
-                    $bestCompetitorProduct = $bestCompetitorProductRepository->getBySku($productWithSku);
-                    if($bestCompetitorProduct[0]->Prezzo_di_Vendita < $productWithSku->price) {
-                        $bestCompetitorProductRepository->update($bestCompetitorProduct[0], $productWithSku->sku, $productWithSku->titolo_prodotto, $productWithSku->competitor, $productWithSku->price, $productWithSku->id);
+                }else {
+                    $bestCompetitorProduct = $bestCompetitorProductRepository->getBySku($productWithSku); //se esiste lo recuperiamo
+                    if($bestCompetitorProduct[0]->Prezzo_di_Vendita < $productWithSku->price) { //confrontiamo i prezzi e se il nuovo prodotto ha il prezzo migliore aggiorniamo i dati
+                        $bestCompetitorProductRepository->update(
+                            $bestCompetitorProduct[0],
+                            $productWithSku->sku,
+                            $productWithSku->titolo_prodotto,
+                            $productWithSku->competitor,
+                            $productWithSku->price,
+                            $productWithSku->id
+                        );
                         $bestCompetitorProductRepository->save($bestCompetitorProduct[0]);
-                        echo "\n BestCompetitorProduct modificato:\n sku: " . $productWithSku->sku;
                     }
                 }
             }

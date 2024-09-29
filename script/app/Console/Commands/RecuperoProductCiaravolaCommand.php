@@ -34,17 +34,16 @@ class RecuperoProductCiaravolaCommand extends Command
         include("simple_html_dom.php");
         $html = file_get_html("https://www.ciaravola.it/chitarre/chitarre-classiche/");
 
-
-        foreach($html->find("div.content-box.clearfix") as $product){
+        foreach($html->find("div.content-box.clearfix") as $product) {
 
             $competitor =  "www.ciaravola.it";
             $link =  $product->find("div a",0)->attr["href"];
             $titolo =  $product->find("div a",0)->attr["title"];
             $detail_html = file_get_html($link);
 
-            if($detail_html->find("div .product-price.h5.has-discount span",0) != null){
+            if($detail_html->find("div .product-price.h5.has-discount span",0) != null) {
                 $priceString = $detail_html->find("div .product-price.h5.has-discount span",0)->text();
-            } else{
+            }else {
                 $priceString = $detail_html->find("div .current-price span",0)->text();
             }
             $price = $productManagement->castPrice($priceString, 13, 0);
@@ -52,9 +51,8 @@ class RecuperoProductCiaravolaCommand extends Command
 
             $product = $productRepository->create($sku, $titolo, $price, $competitor);
 
-            echo "\n\n Prodotto: " . $titolo . "\n competitor: " . $competitor . "\n SKU: " . $sku . "\n prezzo: " . $price;
+            echo "\n\n Prodotto: ".$titolo."\n competitor: ".$competitor."\n SKU: ".$sku."\n prezzo: ".$price;
             $productRepository->save($product);
-
         }
     }
 }

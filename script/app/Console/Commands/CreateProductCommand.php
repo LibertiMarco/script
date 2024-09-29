@@ -31,10 +31,15 @@ class CreateProductCommand extends Command
         $faker = \Faker\Factory::create('it_IT');
         $productsLocal = "|sku|titolo_prodotto|prezzo| \n";
         $productsFTP = "|codice|titolo|price| \n";
-        for ($i = 0; $i < 100; $i++){
-            $product = $productRepository->create($faker->uuid(), $faker->name, random_int(100,2500), $faker->company);
-            $productsLocal = $productsLocal . "|" . $product->sku . "|" . $product->titolo_prodotto . "|" . $product->price . "| \n";
-            $productsFTP = $productsFTP . "|" . $product->sku . "|" . $product->titolo_prodotto . "|" . $product->price . "| \n";
+        for ($i = 0; $i < 100; $i++) {
+            $product = $productRepository->create(
+                $faker->uuid(),
+                $faker->name,
+                random_int(100,2500),
+                $faker->company
+            );
+            $productsLocal = $productsLocal."|".$product->sku."|".$product->titolo_prodotto."|".$product->price."|\n";
+            $productsFTP = $productsFTP."|".$product->sku."|".$product->titolo_prodotto."|".$product->price."|\n";
             $productRepository->save($product);
         }
         //Alternare i due per non far creare gli stessi

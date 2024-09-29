@@ -5,13 +5,18 @@ namespace App\Repository;
 
 use App\Api\ProductRepositoryInterface;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class ProductRepository implements ProductRepositoryInterface
 {
 
-    public function create(String $sku, String $titolo_prodotto, String $price, String $competitor)
+    public function create(
+        String $sku,
+        String $titolo_prodotto,
+        String $price,
+        String $competitor): Product
     {
         $productFactory = Product::factory();
         $product = $productFactory->make([
@@ -20,37 +25,38 @@ class ProductRepository implements ProductRepositoryInterface
             'price' => $price,
             'competitor' => $competitor
         ]);
-
         return $product;
     }
 
-    public function getById(int $id)
+    public function getById(int $id): Product
     {
         return Product::find($id);
     }
 
-    public function getBySku(Product $product)
+    public function getBySku(Product $product): Product
     {
         return Product::where('sku','=',$product->sku)->get();
     }
 
-    public function getList()
+    public function getList(): Collection
     {
         return Product::all();
     }
 
-    public function getListByFile(String $filePath, String $driver, String $mode): array
+    public function getListByFile(
+        String $filePath,
+        String $driver,
+        String $mode): array
     {
-        if($mode === 'HTTP'){
+        if($mode === 'HTTP') {
             $response = Http::get($filePath);
         }
-        if ((Storage::disk($driver)->exists($filePath) && $mode === 'standard') || ($response->successful() && $mode === 'HTTP')) {
-            if($mode === 'standard'){
+        if ((Storage::disk($driver)->exists($filePath) && $mode==='standard')||($response->successful() && $mode==='HTTP')) {
+            if($mode === 'standard') {
                 $csvContent = Storage::disk($driver)->get($filePath);
-            } else {
+            }else {
                 $csvContent = $response->body();
             }
-
 
             $handle = fopen('php://memory', 'r+');
             fwrite($handle, $csvContent);
@@ -63,13 +69,18 @@ class ProductRepository implements ProductRepositoryInterface
             }
 
             fclose($handle);
-        } else {
+        }else {
             echo 'File non trovato';
         }
         return $data;
     }
 
-    public function update(Product $product, String $sku, String $titolo_prodotto, String $price, String $competitor)
+    public function update(
+        Product $product,
+        String $sku,
+        String $titolo_prodotto,
+        String $price,
+        String $competitor): void
     {
         $product->sku = $sku;
         $product->titolo_prodotto  = $titolo_prodotto;
@@ -77,12 +88,12 @@ class ProductRepository implements ProductRepositoryInterface
         $product->competitor  = $competitor;
     }
 
-    public function save(Product $product)
+    public function save(Product $product): void
     {
         $product->save();
     }
 
-    public function delete(Product $product)
+    public function delete(Product $product): void
     {
         $product->delete();
     }

@@ -4,11 +4,16 @@ namespace App\Repository;
 
 use App\Api\CompetitiveProductRepositoryInterface;
 use App\Models\CompetitiveProduct;
+use Illuminate\Database\Eloquent\Collection;
 
 class CompetitiveProductRepository implements CompetitiveProductRepositoryInterface
 {
 
-    public function create(string $sku, string $nomeProdotto, bool $isCompetitiveProduct, float $price)
+    public function create(
+        string $sku,
+        string $nomeProdotto,
+        bool $isCompetitiveProduct,
+        float $price): CompetitiveProduct
     {
         $competitiveProductFactory = CompetitiveProduct::factory();
         $competitiveProduct = $competitiveProductFactory->create([
@@ -20,17 +25,22 @@ class CompetitiveProductRepository implements CompetitiveProductRepositoryInterf
         return $competitiveProduct;
     }
 
-    public function getById(int $id)
+    public function getById(int $id): CompetitiveProduct
     {
-        CompetitiveProduct::find($id);
+        return CompetitiveProduct::find($id);
     }
 
-    public function getList()
+    public function getList(): Collection
     {
-        CompetitiveProduct::all();
+        return CompetitiveProduct::all();
     }
 
-    public function update(CompetitiveProduct $competitiveProduct, string $sku, string $nomeProdotto, bool $is_competitive_product, float $price)
+    public function update(
+        CompetitiveProduct $competitiveProduct,
+        string $sku,
+        string $nomeProdotto,
+        bool $is_competitive_product,
+        float $price): void
     {
         $competitiveProduct->sku = $sku;
         $competitiveProduct->nome_prodotto = $nomeProdotto;
@@ -38,12 +48,12 @@ class CompetitiveProductRepository implements CompetitiveProductRepositoryInterf
         $competitiveProduct->price = $price;
     }
 
-    public function save(CompetitiveProduct $competitiveProduct)
+    public function save(CompetitiveProduct $competitiveProduct): void
     {
         $competitiveProduct->save();
     }
 
-    public function delete(CompetitiveProduct $competitiveProduct)
+    public function delete(CompetitiveProduct $competitiveProduct): void
     {
         $competitiveProduct->delete();
     }

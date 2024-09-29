@@ -30,6 +30,6 @@ class ReadProduct extends Command
         $idProduct = $this->ask('Inserisci l\'id del prodotto che vuoi visualizzare');
         $product = $productRepository->getById($idProduct);
 
-        echo "\n Titolo Prodotto: " . $product->titolo_prodotto . " - SKU: " . $product->sku . " - price: " . $product->price . " - competitor: " . $product->competitor;
+        echo "\n Titolo Prodotto: ". $product->titolo_prodotto;
     }
 }

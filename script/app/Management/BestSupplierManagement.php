@@ -3,14 +3,15 @@
 namespace App\Management;
 
 use App\Models\BestSupplier;
+use Laravel\Nova\Fields\Boolean;
 
 class BestSupplierManagement
 {
 
-    public function checkSku(String $sku)
+    public function checkSku(String $sku): Boolean
     {
         $existProduct = BestSupplier::where('SKU','=',$sku)->get();
-        if(sizeof($existProduct) > 0){
+        if(sizeof($existProduct) > 0) {
             $exist = true;
         } else {
             $exist = false;

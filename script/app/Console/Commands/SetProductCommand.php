@@ -33,7 +33,13 @@ class SetProductCommand extends Command
 
         $product = $productRepository->getById($idProduct);
 
-        $productRepository->update($product, $faker->uuid(), $faker->name, random_int(100,2500), $faker->company);
+        $productRepository->update(
+            $product,
+            $faker->uuid(),
+            $faker->name,
+            random_int(100,2500),
+            $faker->company
+        );
 
         $productRepository->save($product);
     }
